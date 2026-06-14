@@ -8,6 +8,7 @@ Single-file demo that enqueues a job *inside the same transaction* as a business
 export DATABASE_URL="postgres://river:river@localhost:5432/riverdemo?sslmode=disable"
 
 docker compose up -d
+go mod tidy
 go run ./cmd/migrate
 go run .
 ```

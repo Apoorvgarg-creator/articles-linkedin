@@ -118,22 +118,7 @@ River is not trying to beat Redis on raw throughput. It is trying to beat *"we s
 
 Once a job is in Postgres, it walks through a small state machine. River persists every transition, so you can always answer *"what is this job doing right now?"* with one SQL query — or one click in the web UI.
 
-> ▶ View the source diagram in Excalidraw:
-> https://app.excalidraw.com/s/1PTaIRZVycu/5Azt8UjDldo
-
-```mermaid
-stateDiagram-v2
-    [*] --> scheduled: insert with ScheduledAt in the future
-    [*] --> available: insert with no ScheduledAt
-    scheduled --> available: schedule_at reached
-    available --> running: worker claims (SKIP LOCKED)
-    running --> completed: Work returns nil
-    running --> retryable: Work returns error
-    retryable --> available: after exponential backoff
-    running --> discarded: max attempts hit
-    completed --> [*]
-    discarded --> [*]
-```
+riverqueue-job-lifecycle Diagram
 
 Two things worth knowing:
 
@@ -268,10 +253,30 @@ For everything in between — the "we need to send emails, charge cards, sync we
 
 ## Try it
 
-1. Clone the example repo (link above) or copy the `example/` folder.
-2. `docker compose up -d` to start Postgres.
-3. `go run ./cmd/migrate` to apply the River schema.
-4. `go run .` to enqueue an order + job in one transaction and watch the worker drain it.
+```bash
+# 1. point at a local Postgres
+export DATABASE_URL="postgres://river:river@localhost:5432/riverdemo?sslmode=disable"
+
+# 2. boot Postgres
+docker compose up -d
+
+# 3. pull the deps (River + pgx)
+go mod tidy
+
+# 4. create the `orders` table and apply River's own schema
+go run ./cmd/migrate
+
+# 5. enqueue an order + job in one transaction and watch the worker drain it
+go run .
+```
+
+Expected last log line:
+
+```
+sending receipt order=ord_42 to=a@b.com attempt=1
+```
+
+Then comment out the `tx.Commit(ctx)` line in `main.go` and re-run. The `orders` row never appears — and neither does the job. **That is the property River is selling.**
 
 The whole loop is under a minute on a cold machine. If you have a service that currently does `db.Save` followed by `redis.LPush`, that minute is well spent.
 
