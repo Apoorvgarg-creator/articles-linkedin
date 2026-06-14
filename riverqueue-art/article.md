@@ -41,21 +41,7 @@ Most production Go services I have seen reach for Redis-backed queues — Asynq,
 
 That means every enqueue site is implicitly a two-phase commit you didn't ask for.
 
-> ▶ View the source diagram in Excalidraw:
-> https://app.excalidraw.com/s/1PTaIRZVycu/xfDI8e9M8h
-
-```mermaid
-flowchart LR
-    App["Your App"]
-    DB[("PostgreSQL<br/>order row committed")]
-    Redis[("Redis<br/>LPUSH never lands")]
-    App -- "1. INSERT order — COMMIT" --> DB
-    App -. "2. LPUSH job — network error" .-> Redis
-
-    style App fill:#d0ebff,stroke:#1971c2
-    style DB fill:#d3f9d8,stroke:#2f9e44
-    style Redis fill:#ffe3e3,stroke:#e03131
-```
+![Dual-write problem: order committed to Postgres while Redis LPUSH fails](./riverqueue-dual-write-problem.png)
 
 Pick any failure mode you like:
 
@@ -71,23 +57,7 @@ You can paper over each of these with the outbox pattern, transactional outboxes
 
 River's central trick is dead simple. The job row lives in the same Postgres database as your application data, in a table called `river_job`. So when you enqueue, you don't make a second network call — you make a second `INSERT` inside the transaction you were already going to commit.
 
-> ▶ View the source diagram in Excalidraw:
-> https://app.excalidraw.com/s/1PTaIRZVycu/1zYZ2hffUxi
-
-```mermaid
-flowchart LR
-    App["Your App"]
-    subgraph PG["PostgreSQL"]
-      TX["BEGIN<br/>  INSERT INTO orders (...)<br/>  river.InsertTx(ctx, tx, SendReceiptArgs{...})<br/>COMMIT"]
-    end
-    Workers["River Workers (your binary)<br/>FOR UPDATE SKIP LOCKED + LISTEN/NOTIFY"]
-    App --> TX
-    Workers <-- claim available jobs --> TX
-
-    style App fill:#d0ebff,stroke:#1971c2
-    style TX fill:#d3f9d8,stroke:#2f9e44
-    style Workers fill:#fff3bf,stroke:#f08c00
-```
+![Atomic enqueue: order and job inserted in the same Postgres transaction](./riverqueue-atomic-enqueue.png)
 
 The consequences are nice:
 
@@ -118,7 +88,7 @@ River is not trying to beat Redis on raw throughput. It is trying to beat *"we s
 
 Once a job is in Postgres, it walks through a small state machine. River persists every transition, so you can always answer *"what is this job doing right now?"* with one SQL query — or one click in the web UI.
 
-riverqueue-job-lifecycle Diagram
+![River job lifecycle: available → running → completed/retryable/discarded](./riverqueue-job-lifecycle.png)
 
 Two things worth knowing:
 
@@ -280,6 +250,3 @@ Then comment out the `tx.Commit(ctx)` line in `main.go` and re-run. The `orders`
 
 The whole loop is under a minute on a cold machine. If you have a service that currently does `db.Save` followed by `redis.LPush`, that minute is well spent.
 
----
-
-*Article diagrams are editable Excalidraw scenes — open the links above to remix them for your own writeups.*
