@@ -1,0 +1,57 @@
+# GOTCHA variant: identical to otelcol.yaml, except attributes/scrub is
+# configured but never added to a pipeline. The Collector starts happily.
+
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: localhost:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 256
+    spike_limit_mib: 50
+
+  filter/drop_healthz:
+    error_mode: ignore
+    trace_conditions:
+      - span.attributes["http.route"] == "/healthz"
+
+  attributes/scrub:
+    actions:
+      - key: user.email
+        action: hash        # unsalted SHA-256 in v0.162.0 (README still says SHA-1)
+      - key: http.request.header.authorization
+        action: delete
+
+connectors:
+  count:
+    spans:
+      app.span.count:
+        description: Spans per route, counted before any filtering.
+        attributes:
+          - key: http.route
+
+exporters:
+  file/vendor:            # stand-in for your paid tracing backend
+    path: ./out/vendor.json
+  file/counts:
+    path: ./out/counts.json
+
+service:
+  telemetry:
+    logs:
+      level: warn
+  pipelines:
+    traces/vendor:
+      receivers: [otlp]
+      processors: [memory_limiter, filter/drop_healthz]   # attributes/scrub is defined above but NOT listed here
+      exporters: [file/vendor]
+    traces/counts:
+      receivers: [otlp]
+      processors: [memory_limiter]
+      exporters: [count]
+    metrics/counts:
+      receivers: [count]
+      exporters: [file/counts]
