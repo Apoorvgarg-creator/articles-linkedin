@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Pushing three quick fixes should not run three full pipelines.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege for the default GITHUB_TOKEN.
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    # Keep this job name unique across workflows if you mark it as a required check.
+    name: ci
+    runs-on: ubuntu-latest
+    # Default is 360 minutes. A hung test should not eat your free allowance.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # Respect the lockfile. Same install everywhere.
+      - run: npm ci
+
+      # Same command you run locally. Logic lives in package.json, not YAML.
+      - run: npm run ci
+
+      - uses: actions/upload-artifact@v7
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          name: dist-${{ github.sha }}
+          path: dist/
+          retention-days: 7

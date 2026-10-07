@@ -1,0 +1,58 @@
+name: Deploy
+
+on:
+  # Deploy only after CI succeeds on main.
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  # Manual trigger: redeploy any SHA (this is your rollback button).
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: Commit SHA to deploy (defaults to latest main)
+        required: false
+
+# Never run two deploys at once, and never cancel one halfway.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  # Uncomment when you switch to OIDC for cloud credentials:
+  # id-token: write
+
+jobs:
+  deploy:
+    name: deploy
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GIT_SHA: ${{ inputs.sha || github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.GIT_SHA }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+        env:
+          GITHUB_SHA: ${{ env.GIT_SHA }}
+
+      - name: Deploy
+        run: ./scripts/deploy.sh
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+
+      - name: Smoke check
+        if: vars.SMOKE_URL != ''
+        run: npm run smoke
+        env:
+          SMOKE_URL: ${{ vars.SMOKE_URL }}

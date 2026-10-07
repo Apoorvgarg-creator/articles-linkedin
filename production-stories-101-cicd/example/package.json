@@ -1,0 +1,16 @@
+{
+  "name": "minimal-startup-pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Companion repo for Production Stories 101, Issue #1: a minimal CI/CD pipeline for tiny teams.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node src/server.js",
+    "lint": "node --check src/server.js && node --check src/app.js",
+    "test": "node --test test/app.test.js",
+    "build": "node scripts/build.js",
+    "ci": "npm run lint && npm test && npm run build",
+    "smoke": "node scripts/smoke.js"
+  }
+}
