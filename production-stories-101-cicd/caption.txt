@@ -1,1 +1,0 @@
-Production Stories 101, Issue #1: what actually breaks when you set up CI/CD as a founding engineer going from -1 to 0, and the small pipeline I'd build first (starter repo inside).
