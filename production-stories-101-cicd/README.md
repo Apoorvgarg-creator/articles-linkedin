@@ -32,7 +32,6 @@ The runnable starter is [`example/`](example/). The shortened article is [`artic
 .
 ├── article.md
 ├── SOURCES.md
-├── caption.txt
 ├── diagrams/
 │   ├── cicd-friday-failure.png
 │   └── cicd-mvp-pipeline.png

@@ -1,6 +1,6 @@
 # One span in, two truths out: the OpenTelemetry Collector fan-out
 
-Companion code for **The Weekly Commit, OSS Wednesday #1**. Read the article: [article.md](./article.md).
+Companion code for **The Weekly Commit** newsletter article "One span in, two truths out". Read the article: [article.md](./article.md).
 
 A tiny Go service emits 25 spans (20 health checks, 5 checkouts carrying an email and a bearer token). One OpenTelemetry Collector receiver fans them out to two pipelines:
 
@@ -24,12 +24,12 @@ app.span.count{http.route="/checkout"} = 5
 app.span.count{http.route="/healthz"} = 20
 ```
 
-- The filter in `traces/vendor` did not affect `traces/counts`: the fan-out gave the mutating pipeline its own clone.
+- The filter in `traces/vendor` did not affect `traces/counts`: the fan-out gave the mutating pipeline its own clone and the read-only pipeline the original.
 - `authorization` is gone. `user.email` is an **unsalted SHA-256** (equals `printf 'user1@example.com' | sha256sum`), even though the attributes processor README says SHA-1.
 
 **2. Gotcha: a processor that is configured but not wired into a pipeline does nothing, silently.**
 
-`./run.sh gotcha-unwired.yaml` (same config, `attributes/scrub` removed from the pipeline list only). `otelcol validate` passes and the Collector logs no warning:
+`./run.sh gotcha-unwired.yaml` (same config, `attributes/scrub` removed from the pipeline list only). `otelcol validate` passes and the Collector logs no warning, even at `debug` level:
 
 ```
 == traces/vendor (what your paid backend receives) ==
@@ -57,7 +57,7 @@ cd articles-linkedin/otel-collector-art/example
 ./run.sh gotcha-unwired.yaml   # the silent-misconfig gotcha
 ```
 
-`run.sh` downloads `otelcol-contrib` v0.162.0 into `example/bin/` on first run (about 407 MB unpacked, override with `OTELCOL_VERSION=...`), validates the config, starts the Collector on `localhost:4318`, runs the Go app, then prints what each pipeline exported via `summarize.py`. Raw exporter output lands in `example/out/` (`vendor.json`, `counts.json`, `collector.log`).
+`run.sh` downloads `otelcol-contrib` v0.162.0 into `example/bin/` on first run (a 112 MB download that unpacks to about 400 MB; override the version with `OTELCOL_VERSION=...`), validates the config, starts the Collector on `localhost:4318`, runs the Go app, then prints what each pipeline exported via `summarize.py`. Raw exporter output lands in `example/out/` (`vendor.json`, `counts.json`, `collector.log`).
 
 ## Layout
 
