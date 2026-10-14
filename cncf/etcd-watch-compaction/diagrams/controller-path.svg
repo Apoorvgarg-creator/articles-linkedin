@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="780" viewBox="0 0 1600 780">
+  <rect width="1600" height="780" fill="#fffef8"/>
+  <text x="40" y="48" font-family="Georgia, serif" font-size="28" fill="#1a1a1a">Controller path when ErrCompacted hits</text>
+  <!-- boxes -->
+  <rect x="60" y="120" width="280" height="90" rx="10" fill="#d6eaf8" stroke="#2980b9" stroke-width="2"/>
+  <text x="90" y="160" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18">1. Watch from lastRev</text>
+  <text x="100" y="190" font-family="Menlo, monospace" font-size="14">WithRev(lastSeen)</text>
+  <path d="M340 165 H420" stroke="#222" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="420" y="120" width="280" height="90" rx="10" fill="#fdebd0" stroke="#e67e22" stroke-width="2"/>
+  <text x="450" y="160" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18">2. Compact races you</text>
+  <text x="440" y="190" font-family="Menlo, monospace" font-size="14">auto-compact / manual</text>
+  <path d="M700 165 H780" stroke="#222" stroke-width="2"/>
+  <rect x="780" y="120" width="320" height="90" rx="10" fill="#f5b7b1" stroke="#c0392b" stroke-width="2"/>
+  <text x="800" y="155" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18">3. Watch canceled</text>
+  <text x="800" y="185" font-family="Menlo, monospace" font-size="13">ErrCompacted + CompactRevision</text>
+  <path d="M940 210 V280" stroke="#222" stroke-width="2"/>
+  <!-- wrong branch -->
+  <rect x="80" y="300" width="560" height="160" rx="10" fill="#fdedec" stroke="#e74c3c" stroke-width="3"/>
+  <text x="100" y="340" font-family="Georgia, serif" font-size="22" fill="#c0392b">WRONG</text>
+  <text x="100" y="380" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18">Retry the same WithRev(lastSeen)</text>
+  <text x="100" y="415" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="16" fill="#555">History is gone. You loop on ErrCompacted</text>
+  <text x="100" y="440" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="16" fill="#555">or worse: pretend you are caught up.</text>
+  <!-- right branch -->
+  <rect x="700" y="300" width="820" height="220" rx="10" fill="#eafaf1" stroke="#27ae60" stroke-width="3"/>
+  <text x="720" y="340" font-family="Georgia, serif" font-size="22" fill="#1e8449">RIGHT</text>
+  <text x="720" y="380" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18">A. Treat ErrCompacted as "history gap"</text>
+  <text x="720" y="415" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18">B. List/Get current keyspace (or from CompactRevision)</text>
+  <text x="720" y="450" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18">C. Rebuild local cache from that snapshot</text>
+  <text x="720" y="485" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18">D. Watch again from CompactRevision / current+1</text>
+  <text x="60" y="600" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18" fill="#333">Client v3: WatchResponse.Err() returns v3rpc.ErrCompacted when CompactRevision != 0.</text>
+  <text x="60" y="640" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="16" fill="#666">Do not auto-resume the old start_revision. The server cancels on purpose.</text>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#222"/></marker></defs>
+</svg>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="700" viewBox="0 0 1600 700">
+  <rect width="1600" height="700" fill="#fffef8"/>
+  <text x="40" y="48" font-family="Georgia, serif" font-size="28" fill="#1a1a1a">MVCC revisions: one global clock</text>
+  <text x="40" y="82" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18" fill="#555">Every put / delete bumps the cluster revision. History stays until compact.</text>
+  <!-- timeline -->
+  <line x1="80" y1="280" x2="1480" y2="280" stroke="#222" stroke-width="3"/>
+  <!-- ticks -->
+  <g font-family="Menlo, monospace" font-size="16" fill="#222">
+    <circle cx="200" cy="280" r="10" fill="#4a90d9"/><text x="175" y="250">rev 1</text><text x="150" y="330" font-size="14" fill="#666">(cluster start)</text>
+    <circle cx="420" cy="280" r="10" fill="#2ecc71"/><text x="395" y="250">rev 2</text>
+    <rect x="360" y="360" width="200" height="70" rx="8" fill="#e8f8ef" stroke="#2ecc71" stroke-width="2"/>
+    <text x="380" y="390">PUT /demo/pod/a</text><text x="400" y="415">running</text>
+    <circle cx="640" cy="280" r="10" fill="#2ecc71"/><text x="615" y="250">rev 3</text>
+    <rect x="580" y="360" width="200" height="70" rx="8" fill="#e8f8ef" stroke="#2ecc71" stroke-width="2"/>
+    <text x="600" y="390">PUT /demo/pod/b</text><text x="620" y="415">pending</text>
+    <circle cx="860" cy="280" r="10" fill="#2ecc71"/><text x="835" y="250">rev 4</text>
+    <rect x="800" y="360" width="200" height="70" rx="8" fill="#e8f8ef" stroke="#2ecc71" stroke-width="2"/>
+    <text x="820" y="390">PUT /demo/pod/a</text><text x="850" y="415">ready</text>
+    <circle cx="1080" cy="280" r="10" fill="#f39c12"/><text x="1055" y="250">rev 5</text>
+    <circle cx="1300" cy="280" r="10" fill="#f39c12"/><text x="1275" y="250">rev 6</text>
+  </g>
+  <!-- watch bracket -->
+  <path d="M420 200 H860" stroke="#e74c3c" stroke-width="3" fill="none"/>
+  <text x="520" y="180" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18" fill="#e74c3c">watch --rev=2 sees 3 PUTs</text>
+  <text x="40" y="520" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18" fill="#333">Demo (etcd v3.7.2): watch from rev 2 while history is intact -> 3 events.</text>
+  <text x="40" y="560" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="16" fill="#666">ASCII: put a(2) -> put b(3) -> update a(4) -> ... -> compact 6</text>
+</svg>

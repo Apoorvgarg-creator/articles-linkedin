@@ -1,0 +1,3 @@
+watch was canceled (etcdserver: mvcc: required revision has been compacted)
+Error: watch is canceled by the server
+(watch exited rc=5)

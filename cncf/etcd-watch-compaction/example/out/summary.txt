@@ -1,0 +1,10 @@
+etcd_version=3.7.2
+watch_from_revision=2
+revision_after_initial_puts=4
+compacted_revision=6
+events_seen=3
+--- ErrCompacted (watch) ---
+watch was canceled (etcdserver: mvcc: required revision has been compacted)
+Error: watch is canceled by the server
+--- ErrCompacted (get) ---
+Error: etcdserver: mvcc: required revision has been compacted

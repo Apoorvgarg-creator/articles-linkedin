@@ -1,0 +1,7 @@
+OK
+rev after put a: 2
+OK
+rev after put b: 3
+OK
+rev after update a: 4
+current cluster revision: 4
