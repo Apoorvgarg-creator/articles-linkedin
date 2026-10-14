@@ -36,7 +36,7 @@ Set `ETCD_VER`, `CLIENT_PORT` or `PEER_PORT` to override.
 - Retrying the same start revision fails every time. The history is gone.
 - In clientv3, `WatchResponse.Err()` returns `ErrCompacted` when `CompactRevision != 0`, and the watch channel closes.
 - Changes between your last revision and the compaction point are not recoverable from etcd. Rebuild from a list.
-- Auto-compaction (periodic, or revision mode keeping the last N revisions, checked every 5 minutes) moves the floor without you running `compact`.
+- Auto-compaction moves the floor without you running `compact`. Periodic mode keeps a time window. Revision mode keeps the last N revisions and checks every 5 minutes.
 - Kubernetes client-go informers talk to the API server, not etcd. The reflector re-lists when its resume point is too old.
 
 ## Files
