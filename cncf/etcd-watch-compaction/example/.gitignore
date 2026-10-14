@@ -1,0 +1,5 @@
+bin/
+data/
+out/*.raw
+out/etcd.log
+*.log

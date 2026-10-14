@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="600" viewBox="0 0 1600 600">
+  <rect width="1600" height="600" fill="#fffef8"/>
+  <text x="40" y="48" font-family="Georgia, serif" font-size="28" fill="#1a1a1a">Real numbers from the companion demo (etcd v3.7.2)</text>
+  <g font-family="Menlo, monospace" font-size="20">
+    <rect x="60" y="100" width="700" height="100" rx="10" fill="#eaf2f8" stroke="#2980b9" stroke-width="2"/>
+    <text x="90" y="145" fill="#1a5276">watch --rev=2 --prefix /demo/pod/</text>
+    <text x="90" y="180" fill="#1a5276">-> events_seen = 3</text>
+    <rect x="820" y="100" width="700" height="100" rx="10" fill="#fef5e7" stroke="#e67e22" stroke-width="2"/>
+    <text x="850" y="145" fill="#9a7b4f">etcdctl compact 6</text>
+    <text x="850" y="180" fill="#9a7b4f">-> compacted revision 6</text>
+    <rect x="60" y="250" width="700" height="120" rx="10" fill="#fdedec" stroke="#e74c3c" stroke-width="2"/>
+    <text x="90" y="295" fill="#922b21">watch --rev=2  (again)</text>
+    <text x="90" y="330" fill="#922b21">-> canceled: required revision</text>
+    <text x="90" y="355" fill="#922b21">   has been compacted</text>
+    <rect x="820" y="250" width="700" height="120" rx="10" fill="#eafaf1" stroke="#27ae60" stroke-width="2"/>
+    <text x="850" y="295" fill="#1e8449">get --prefix /demo/pod/</text>
+    <text x="850" y="330" fill="#1e8449">a=ready b=ready c=starting</text>
+    <text x="850" y="355" fill="#1e8449">then watch from rev 6+</text>
+  </g>
+  <text x="60" y="450" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18" fill="#333">Same message on get --rev=2: etcdserver: mvcc: required revision has been compacted</text>
+  <text x="60" y="490" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="16" fill="#666">gRPC code OutOfRange. Client alias: ErrCompacted.</text>
+</svg>

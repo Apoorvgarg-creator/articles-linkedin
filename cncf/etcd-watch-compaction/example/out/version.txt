@@ -1,0 +1,6 @@
+etcd Version: 3.7.2
+Git SHA: 68c065e
+Go Version: go1.26.8
+Go OS/Arch: linux/amd64
+etcdctl version: 3.7.2
+API version: 3.7

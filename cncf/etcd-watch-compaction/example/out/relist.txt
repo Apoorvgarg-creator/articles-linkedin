@@ -1,0 +1,6 @@
+/demo/pod/a
+ready
+/demo/pod/b
+ready
+/demo/pod/c
+starting

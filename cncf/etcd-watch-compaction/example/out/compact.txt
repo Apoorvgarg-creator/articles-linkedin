@@ -1,0 +1,4 @@
+OK
+OK
+revision before compact: 6
+compacted revision 6

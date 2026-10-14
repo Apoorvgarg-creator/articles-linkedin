@@ -1,0 +1,2 @@
+Error: etcdserver: mvcc: required revision has been compacted
+(get exited rc=1)

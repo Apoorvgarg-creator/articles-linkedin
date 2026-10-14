@@ -1,0 +1,10 @@
+PUT
+/demo/pod/a
+running
+PUT
+/demo/pod/b
+pending
+PUT
+/demo/pod/a
+ready
+(watch exited rc=124 after timeout; that is expected)

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="700" viewBox="0 0 1600 700">
+  <rect width="1600" height="700" fill="#fffef8"/>
+  <text x="40" y="48" font-family="Georgia, serif" font-size="28" fill="#1a1a1a">Compaction drops history before a revision</text>
+  <text x="40" y="82" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18" fill="#555">etcdctl compact 6 keeps rev 6+. Everything before is gone.</text>
+  <!-- history bar -->
+  <rect x="100" y="220" width="500" height="80" rx="6" fill="#f5b7b1" stroke="#c0392b" stroke-width="2" stroke-dasharray="8 4"/>
+  <text x="180" y="265" font-family="Menlo, monospace" font-size="20" fill="#922b21">rev 1..5 UNAVAILABLE</text>
+  <!-- wall -->
+  <rect x="620" y="160" width="40" height="220" fill="#c0392b"/>
+  <text x="580" y="420" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="18" fill="#c0392b" transform="rotate(-90 600 300)">COMPACT 6</text>
+  <!-- kept -->
+  <rect x="680" y="220" width="700" height="80" rx="6" fill="#d5f5e3" stroke="#1e8449" stroke-width="2"/>
+  <text x="820" y="265" font-family="Menlo, monospace" font-size="20" fill="#145a32">rev 6+ still readable / watchable</text>
+  <!-- wrong arrow -->
+  <rect x="100" y="480" width="620" height="140" rx="10" fill="#fdedec" stroke="#e74c3c" stroke-width="3"/>
+  <text x="120" y="520" font-family="Georgia, serif" font-size="22" fill="#c0392b">WRONG</text>
+  <text x="120" y="555" font-family="Menlo, monospace" font-size="18" fill="#333">watch --rev=2  ->  ErrCompacted</text>
+  <text x="120" y="590" font-family="Comic Sans MS, Segoe UI, sans-serif" font-size="16" fill="#555">"required revision has been compacted"</text>
+  <!-- right -->
+  <rect x="760" y="480" width="720" height="140" rx="10" fill="#eafaf1" stroke="#27ae60" stroke-width="3"/>
+  <text x="780" y="520" font-family="Georgia, serif" font-size="22" fill="#1e8449">RIGHT</text>
+  <text x="780" y="555" font-family="Menlo, monospace" font-size="18" fill="#333">get --prefix /demo/pod/  (re-list)</text>
+  <text x="780" y="590" font-family="Menlo, monospace" font-size="18" fill="#333">then watch from CompactRevision / current</text>
+</svg>
