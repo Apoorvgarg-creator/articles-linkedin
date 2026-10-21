@@ -4,7 +4,7 @@ I added one label to one counter. Prometheus went from 6 time series to 223,770,
 
 ## Three words first
 
-**Prometheus** is an open source monitoring tool, a graduated CNCF project. Every 15 seconds it visits your app's `/metrics` page and writes down the numbers it finds. That visit is a **scrape**.
+**Prometheus** is an open source monitoring tool, a graduated CNCF project. Every 15 seconds in my demo, it visits your app's `/metrics` page and writes down the numbers it finds. That visit is a **scrape**.
 
 A **metric** is one named number. `http_requests_total` counts the requests your API handled.
 
@@ -12,7 +12,7 @@ A **label** is a tag on that number. It says which slice it counts: `route="/che
 
 ## One tally sheet per tag combo
 
-Picture a clipboard of tally sheets. Prometheus keeps one sheet for every unique combination of labels and adds a tick to each sheet on every scrape. One sheet is one **time series**.
+Picture a clipboard of tally sheets. Prometheus keeps one sheet for every unique combination of labels and writes the latest number on each sheet on every scrape. One sheet is one **time series**.
 
 My demo API has 3 routes and 2 results. 3 x 2 = 6 sheets. The number of sheets is called **cardinality**. Here it is 6.
 
@@ -48,7 +48,7 @@ RSS is the RAM the process really holds. In this run each series cost about 2 KB
 
 ![Every sheet costs memory](article-images/img-06.png)
 
-Hosted Prometheus bills for this too. Grafana Cloud Pro lists $6.50 per 1,000 active series a month after the first 10,000 (checked 21 Oct 2026). At list price, 223,770 series kept all month is about $1,300. For one counter.
+Hosted Prometheus bills for this too. Grafana Cloud Pro lists $6.50 per 1,000 active series a month after the first 10,000, and a bit less above 100,000 (checked 21 Oct 2026). At list price, 223,770 series kept all month is about $1,300. For one counter.
 
 ## How to see it
 

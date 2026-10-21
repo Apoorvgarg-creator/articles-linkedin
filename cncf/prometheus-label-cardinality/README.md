@@ -116,7 +116,7 @@ Tweak with env vars: `WAIT=300 ./run.sh`.
 
 Notes:
 - The app sets `PROMETHEUS_DISABLE_CREATED_SERIES=True`. By default the Python client adds a `_created` series next to every counter label set, which doubles the count (the first run measured 12 samples instead of 6 for the good app).
-- Traffic is simulated with a fixed random seed (3 requests per user at startup, then 50 requests per second), so the series count is repeatable. Not every user hits every route, so 10,000 users made 25,728 series, not 60,000.
+- Traffic is simulated with a fixed random seed (3 requests per user at startup, then 50 requests per second), so runs are close but not identical. A re-run got 25,728 again at 10k users, 4,414 at 1k and 223,648 at 100k, and scrape time and heap vary from run to run. Not every user hits every route, so 10,000 users made 25,728 series, not 60,000.
 
 ## Layout
 
