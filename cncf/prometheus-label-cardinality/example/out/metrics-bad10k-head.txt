@@ -1,0 +1,6 @@
+# HELP http_requests_total HTTP requests handled
+# TYPE http_requests_total counter
+http_requests_total{route="/checkout",status="200",user_id="user-000409"} 1.0
+http_requests_total{route="/checkout",status="200",user_id="user-004012"} 3.0
+http_requests_total{route="/login",status="200",user_id="user-001679"} 1.0
+http_requests_total{route="/checkout",status="500",user_id="user-001424"} 2.0
