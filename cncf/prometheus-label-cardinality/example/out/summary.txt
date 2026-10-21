@@ -1,0 +1,38 @@
+run        users payload_KB samples/scrape head_series   rss_MB heap_inuse_MB  scrape_s
+good           0          0              6          11       82            18      0.00
+bad1k       1000        325           4302        4307       98            31      0.06
+bad10k     10000       1907          25728       25733      142            81      0.39
+bad100k   100000      16537         223770      223775      571           461      2.72
+
+# how to SEE it on the 10k run
+count by (__name__) ({__name__=~".+"})  ->
+   http_requests_total 25728
+   up 1
+   scrape_duration_seconds 1
+   scrape_samples_scraped 1
+   scrape_samples_post_metric_relabeling 1
+   scrape_series_added 1
+count(count by (user_id) (http_requests_total)) -> 9794
+TSDB status labelValueCountByLabelName ->
+   user_id 9794
+   __name__ 6
+   route 3
+   status 2
+   instance 1
+   job 1
+
+# guardrail: sample_limit 5000 on the 10k app
+up -> 0
+scrape_samples_scraped -> 25728
+prometheus_target_scrapes_exceeded_sample_limit_total -> 10
+head_series -> 5005
+last scrape error ->
+   sample limit exceeded
+
+# wrong quick fix: labeldrop user_id on the 1k app (compare with bad1k, same app, same moment)
+count(http_requests_total) bad1k -> 4302   labeldrop -> 6
+sum(http_requests_total) bad1k (true total) -> 10100   labeldrop -> 16
+up (labeldrop) -> 1
+prometheus_target_scrapes_sample_duplicate_timestamp_total -> 0
+last scrape error ->
+   
