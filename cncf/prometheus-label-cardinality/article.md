@@ -81,7 +81,7 @@ Thousands of sheets got squeezed onto 6 names, so the numbers stopped meaning an
 ## Right: few sheets, plus a seatbelt
 
 1. **Remove `user_id` in code.** Keep route and status. Back to 6 series. Per-user detail goes to logs, where one line per request is normal.
-2. **Add `sample_limit` to the scrape config.** With `sample_limit: 5000`, Prometheus refused the 10,000-user scrape and logged `sample limit exceeded`. `up`, the series Prometheus writes for every target, went to 0. You can alert on that.
+2. **Add `sample_limit` to the scrape config.** With `sample_limit: 5000`, Prometheus refused the 10,000-user scrape and reported `sample limit exceeded`. `up`, the series Prometheus writes for every target, went to 0. You can alert on that.
 
 ![Right](article-images/img-09.png)
 
